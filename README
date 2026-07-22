@@ -1,0 +1,13 @@
+python -m venv .venv // Crear entorno virtual
+source .venv/Scripts/activate // Activar entorno virtual
+.
+# Install dependencies
+pip install fastapi "uvicorn[standard]" pydantic supabase 
+
+.
+# Para levantar postgres en local
+npx supabase start
+
+.
+# Para la conexión a la base de datos
+pip install sqlalchemy psycopg2-binary python-dotenv
