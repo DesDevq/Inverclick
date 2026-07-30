@@ -16,3 +16,8 @@ class PrefixRepository:
         statement = select(Prefix).offset(skip).limit(limit)
         return list(self.db.execute(statement).scalars().all())
 
+    def get_by_code(self, code: str) -> Prefix | None:
+        """Obtiene un Prefix por su código."""
+        statement = select(Prefix).where(Prefix.country_phone_code == code)
+        return self.db.execute(statement).scalar_one_or_none()
+

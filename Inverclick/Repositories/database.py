@@ -10,8 +10,12 @@ load_dotenv()
 # Obtener la URL (Asegúrate de que no devuelva None)
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-# Crear el engine. echo=True imprimirá las consultas SQL en la consola (útil en desarrollo)
-engine = create_engine(DATABASE_URL, echo=True)
+# Crear el engine con search_path configurado al esquema inverclick
+engine = create_engine(
+    DATABASE_URL,
+    echo=True,
+    connect_args={"options": "-c search_path=inverclick,public"} if DATABASE_URL and DATABASE_URL.startswith("postgresql") else {}
+)
 
 # Configurar la fábrica de sesiones
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -31,7 +35,7 @@ def get_db():
 # Función para verificar la conexión y la estructura de las tablas sin alterarlas
 def verify_db_connection_and_schema():
     from sqlalchemy import inspect, text
-    from Models.users import Usuario  # Importación diferida para evitar ciclos
+    from Models.users import UserDTO  # Importación diferida para evitar ciclos
     
     try:
         # 1. Verificar la conexión básica ejecutando una consulta rápida
@@ -41,16 +45,20 @@ def verify_db_connection_and_schema():
             
             # 2. Inspeccionar la base de datos
             inspector = inspect(engine)
-            table_name = Usuario.__tablename__
+            table_name = UserDTO.__tablename__
+            schema = UserDTO.__table__.schema
             
             # Verificar si la tabla existe
-            if not inspector.has_table(table_name):
-                print(f"DATABASE ERROR: La tabla '{table_name}' no existe en la base de datos.")
-                return False
+            if not inspector.has_table(table_name, schema=schema):
+                if schema and inspector.has_table(table_name):
+                    schema = None
+                else:
+                    print(f"DATABASE ERROR: La tabla '{table_name}' no existe en la base de datos.")
+                    return False
                 
             # 3. Verificar que las columnas coincidan
-            db_columns = {col["name"]: col for col in inspector.get_columns(table_name)}
-            model_columns = Usuario.__table__.columns
+            db_columns = {col["name"]: col for col in inspector.get_columns(table_name, schema=schema)}
+            model_columns = UserDTO.__table__.columns
             
             for col in model_columns:
                 if col.name not in db_columns:

@@ -1,51 +1,89 @@
+from typing import Any
 from Repositories.IUsuariosRepository import IUsuariosRepository
-from Models.users import Usuario
-from Repositories.PrefixRepository import PrefixRepository
+from Models.users import UserDTO
+from Services.IUsuariosService import IUsuariosService
+from Repositories.IPrefixRepository import IPrefixRepository
+from Utils.HttpResponses.userHttpResponses import UserHttpResponses
+from Utils.user_validator import UserValidator
 
-class UsuariosService:
-    def __init__(self, repository: IUsuariosRepository, prefixRepository: PrefixRepository):
+
+def validateUser(self, userDTO: UserDTO) -> UserDTO:
+    if isinstance(userDTO, dict):
+        email = userDTO.get("email")
+        identification = userDTO.get("identification")
+        identification_type = userDTO.get("identification_type")
+        country_id = userDTO.get("country_id")
+        user_dto = UserDTO(**userDTO)
+    else:
+        email = userDTO.email
+        identification = userDTO.identification
+        identification_type = userDTO.identification_type
+        country_id = userDTO.country_id
+        user_dto = userDTO
+
+    invalid = self.validator.validate_user_dto_lengths(userDTO)
+    if invalid:
+        field, min_len, max_len = invalid
+        raise self.http_responses.error_invalid_length(field, min_len, max_len)
+
+    if country_id:
+        country = self.prefix_repository.get_by_id(country_id)
+        if country is None:
+            raise self.http_responses.error_country_not_found()
+
+    if email and self.repository.get_by_email(email) is not None:
+        raise self.http_responses.error_email_already_exists()
+
+    if identification and self.repository.get_by_identification(identification, identification_type) is not None:
+        raise self.http_responses.error_identification_already_exists()
+    
+    return user_dto
+
+
+
+class UsuariosService(IUsuariosService):
+    def __init__(self, repository: IUsuariosRepository, prefix_repository: IPrefixRepository, http_responses: UserHttpResponses, validator: UserValidator):
         self.repository = repository
+        self.prefix_repository = prefix_repository
+        self.http_responses = http_responses
+        self.validator = validator
 
-    def get_by_id(self, usuario_id: int) -> Usuario | None:
-        user: Usuario | None = self.repository.get_by_id(usuario_id)
+    def get_by_id(self, user_id: int) -> UserDTO | None:
+        user: UserDTO | None = self.repository.get_by_id(user_id)
         if user is None:
-            raise ValueError("Usuario no encontrado")
+            raise self.http_responses.error_user_not_found()
         return user
 
-    def get_by_email(self, email: str) -> Usuario | None:
-        user: Usuario | None = self.repository.get_by_email(email)
+    def get_by_email(self, email: str) -> UserDTO | None:
+        user: UserDTO | None = self.repository.get_by_email(email)
         if user is None:
-            raise ValueError("Usuario no encontrado")
+            raise self.http_responses.error_user_not_found()
         return user
 
-    def get_all(self, skip: int = 0, limit: int = 100) -> list[Usuario]:
-        users: list[Usuario] = self.repository.get_all(skip, limit)
-        if users is None:
-            raise ValueError("Usuarios no encontrados")
+    def get_all(self, skip: int = 0, limit: int = 100) -> list[UserDTO]:
+        users: list[UserDTO] = self.repository.get_all(skip, limit)
         return users
 
-    def create(self, nombre: str, email: str) -> Usuario:
-
-        if self.repository.get_by_email(email) is not None:
-            raise ValueError("El email ya existe")
-
-        prefix = self.prefixRepository.get_by_prefix("+58")
-        if prefix is None:
-            raise ValueError("Prefijo no encontrado")
-
-        user: Usuario = self.repository.create(nombre, email)
+    def create(self, userDTO: UserDTO) -> UserDTO:
+        user_dto = validateUser(self, userDTO)
+        user: UserDTO = self.repository.create(user_dto)
         if user is None:
-            raise ValueError("Usuario no creado")
+            raise self.http_responses.error_user_not_created()
         return user
 
-    def update(self, usuario_id: int, nombre: str = None, email: str = None) -> Usuario | None:
-        user: Usuario | None = self.repository.update(usuario_id, nombre, email)
+    def update(self, user_id: int, user_data: dict[str, Any] | UserDTO) -> UserDTO | None:
+        invalid = self.validator.validate_user_dto_lengths(user_data)
+        if invalid:
+            field, min_len, max_len = invalid
+            raise self.http_responses.error_invalid_length(field, min_len, max_len)
+
+        user: UserDTO | None = self.repository.update(user_id, user_data)
         if user is None:
-            raise ValueError("Usuario no actualizado")
+            raise self.http_responses.error_user_not_updated()
         return user
 
-    def delete(self, usuario_id: int) -> bool:
-        user: bool = self.repository.delete(usuario_id)
-        if user is None:
-            raise ValueError("Usuario no eliminado")
-        return user
+    def delete(self, user_id: int) -> bool:
+        success: bool = self.repository.delete(user_id)
+        if not success:
+            raise self.http_responses.error_user_not_deleted()
+        return success
