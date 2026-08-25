@@ -1,7 +1,6 @@
 from typing import Any
 from Repositories.IUsuariosRepository import IUsuariosRepository
 from Models.users import UserDTO
-from Services.IUsuariosService import IUsuariosService
 from Repositories.IPrefixRepository import IPrefixRepository
 from Utils.HttpResponses.userHttpResponses import UserHttpResponses
 from Utils.user_validator import UserValidator
@@ -13,12 +12,14 @@ def validateUser(self, userDTO: UserDTO) -> UserDTO:
         identification = userDTO.get("identification")
         identification_type = userDTO.get("identification_type")
         country_id = userDTO.get("country_id")
+        user_id_role = userDTO.get("user_id_role")
         user_dto = UserDTO(**userDTO)
     else:
         email = userDTO.email
         identification = userDTO.identification
         identification_type = userDTO.identification_type
         country_id = userDTO.country_id
+        user_id_role = getattr(userDTO, "user_id_role", None)
         user_dto = userDTO
 
     invalid = self.validator.validate_user_dto_lengths(userDTO)
@@ -39,9 +40,7 @@ def validateUser(self, userDTO: UserDTO) -> UserDTO:
     
     return user_dto
 
-
-
-class UsuariosService(IUsuariosService):
+class UsuariosService:
     def __init__(self, repository: IUsuariosRepository, prefix_repository: IPrefixRepository, http_responses: UserHttpResponses, validator: UserValidator):
         self.repository = repository
         self.prefix_repository = prefix_repository

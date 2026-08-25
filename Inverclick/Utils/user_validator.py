@@ -1,3 +1,4 @@
+from datetime import date, datetime
 from typing import Optional, Tuple, Any
 
 class UserValidator:
@@ -37,6 +38,8 @@ class UserValidator:
                 value = getattr(user_obj, field, None)
 
             if value is not None:
+                if isinstance(value, (date, datetime)):
+                    continue
                 val_str = value.value if hasattr(value, "value") else str(value)
                 val_len = len(val_str)
                 if val_len < min_len or val_len > max_len:
@@ -53,6 +56,8 @@ class UserValidator:
         :return: None si la longitud es válida; de lo contrario, tupla (campo, min_len, max_len).
         """
         if field_name in cls.FIELD_LENGTHS and value is not None:
+            if isinstance(value, (date, datetime)):
+                return None
             min_len, max_len = cls.FIELD_LENGTHS[field_name]
             val_str = value.value if hasattr(value, "value") else str(value)
             val_len = len(val_str)

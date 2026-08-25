@@ -1,7 +1,7 @@
 # models.py
-from datetime import datetime
-from typing import Optional
-from sqlalchemy import String, Integer, DateTime, ForeignKey, Identity, Enum as SQLEnum
+from datetime import datetime, date
+from typing import Optional, Union
+from sqlalchemy import String, Integer, DateTime, Date, ForeignKey, Identity, Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column
 from pydantic import BaseModel, ConfigDict
 from Repositories.database import Base
@@ -21,6 +21,7 @@ class UserDTO(Base):
         nullable=False
     )
     country_id: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey("inverclick.countries.id"), nullable=True)
+    user_id_role: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey("inverclick.users_role.id"), nullable=True)
     residence_city: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
     street_address: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     zip_code: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
@@ -31,6 +32,7 @@ class UserDTO(Base):
     desired_description: Mapped[str] = mapped_column(String(500), nullable=False)
     updated_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True, default=datetime.utcnow, onupdate=datetime.utcnow)
     created_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True, default=datetime.utcnow)
+    date_of_birth: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
 
 # --- Esquemas Pydantic con validación estricta (extra='forbid') ---
 
@@ -43,6 +45,7 @@ class UserCreateSchema(BaseModel):
     identification: str
     identification_type: str
     country_id: Optional[int] = None
+    user_id_role: Optional[int] = None
     residence_city: Optional[str] = None
     street_address: Optional[str] = None
     zip_code: Optional[str] = None
@@ -51,6 +54,7 @@ class UserCreateSchema(BaseModel):
     monthly_income: Optional[str] = None
     monthly_outcome: Optional[str] = None
     desired_description: str
+    date_of_birth: Optional[date] = None
 
 class UserUpdateSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True, extra="forbid")
@@ -61,6 +65,7 @@ class UserUpdateSchema(BaseModel):
     identification: Optional[str] = None
     identification_type: Optional[str] = None
     country_id: Optional[int] = None
+    user_id_role: Optional[int] = None
     residence_city: Optional[str] = None
     street_address: Optional[str] = None
     zip_code: Optional[str] = None
@@ -69,6 +74,7 @@ class UserUpdateSchema(BaseModel):
     monthly_income: Optional[str] = None
     monthly_outcome: Optional[str] = None
     desired_description: Optional[str] = None
+    date_of_birth: Optional[date] = None
 
 class UserResponseSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -80,6 +86,7 @@ class UserResponseSchema(BaseModel):
     identification: str
     identification_type: str
     country_id: Optional[int] = None
+    user_id_role: Optional[int] = None
     residence_city: Optional[str] = None
     street_address: Optional[str] = None
     zip_code: Optional[str] = None
@@ -90,3 +97,4 @@ class UserResponseSchema(BaseModel):
     desired_description: str
     updated_at: Optional[datetime] = None
     created_at: Optional[datetime] = None
+    date_of_birth: Optional[Union[date, datetime]] = None

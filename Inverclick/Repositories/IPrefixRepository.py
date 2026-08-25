@@ -8,4 +8,5 @@ class IPrefixRepository:
     def get_all(self, skip: int = 0, limit: int = 100) -> list[Prefix]:
         pass
 
-    def get_by
+    def get_by_code(self, code: str) -> Prefix | None:
+        pass

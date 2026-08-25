@@ -41,6 +41,10 @@ class UserHttpResponses:
         return HTTPException(status_code=404, detail="País no encontrado")
 
     @staticmethod
+    def error_role_not_found() -> HTTPException:
+        return HTTPException(status_code=404, detail="Rol de usuario no encontrado")
+
+    @staticmethod
     def error_invalid_length(field: str, min_length: int, max_length: int) -> HTTPException:
         return HTTPException(status_code=400, detail=f"Longitud inválida para el campo {field}, debe tener entre {min_length} y {max_length} caracteres")
 

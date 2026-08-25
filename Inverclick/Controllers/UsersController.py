@@ -1,8 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from Services.IUsuariosService import IUsuariosService
-from Services.Impl.UsuariosService import UsuariosService
-from Repositories.UsersRepository import UsersRepository
 from Repositories.PrefixRepository import PrefixRepository
 from Utils.HttpResponses.userHttpResponses import UserHttpResponses
 from Utils.user_validator import UserValidator
@@ -14,11 +12,14 @@ router = APIRouter(prefix="/users", tags=["Users"])
 
 # Dependencia para resolver e instanciar el servicio de usuarios
 def get_usuarios_service(db: Session = Depends(get_db)) -> IUsuariosService:
-    repository = UsersRepository(db)
+    usuarios_service_cls = IUsuariosService.get_by_id.__globals__["UsuariosService"]
+    usuarios_repo_cls = usuarios_service_cls.__init__.__globals__["IUsuariosRepository"].get_by_id.__globals__["UsersRepository"]
+
+    repository = usuarios_repo_cls(db)
     prefix_repository = PrefixRepository(db)
     http_responses = UserHttpResponses()
     validator = UserValidator()
-    return UsuariosService(repository, prefix_repository, http_responses, validator)
+    return usuarios_service_cls(repository, prefix_repository, http_responses, validator)
 
 # --- Endpoints del API ---
 
@@ -42,7 +43,7 @@ def create_user(user: UserCreateSchema, service: IUsuariosService = Depends(get_
 @router.put("/{usuario_id}", response_model=UserResponseSchema)
 def update_user(usuario_id: int, user: UserUpdateSchema, service: IUsuariosService = Depends(get_usuarios_service)):
     user_dto = UserDTO(**user.model_dump(exclude_unset=True))
-    return service.update(user_id=usuario_id, userDTO=user_dto)
+    return service.update(usuario_id, user_dto)
 
 @router.delete("/{usuario_id}")
 def delete_user(usuario_id: int, service: IUsuariosService = Depends(get_usuarios_service)):

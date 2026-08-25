@@ -1,0 +1,38 @@
+# Inverclick API
+
+## 1. Configuración Inicial
+
+```bash
+# Crear entorno virtual
+python -m venv .venv
+
+# Activar entorno virtual en Windows PowerShell
+.\.venv\Scripts\Activate.ps1
+
+# Instalar dependencias
+pip install fastapi "uvicorn[standard]" pydantic supabase sqlalchemy psycopg2-binary python-dotenv
+```
+
+---
+
+## 2. Ejecución del Proyecto
+
+### Opción A: Directamente con Python (`main.py`)
+```bash
+# Ejecución básica (puerto 8000, 127.0.0.1, recarga activa)
+python main.py
+
+# Parámetros personalizados
+python main.py --host 0.0.0.0 --port 8080 --reload --log-level debug
+
+# Producción con múltiples workers (deshabilita reload automáticamente)
+python main.py --host 0.0.0.0 --port 8000 --workers 4 --no-reload
+
+# Ver ayuda de parámetros
+python main.py --help
+```
+
+### Opción B: Mediante Uvicorn CLI
+```bash
+uvicorn main:app --reload --host 127.0.0.1 --port 8000
+```
