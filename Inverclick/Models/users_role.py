@@ -5,15 +5,22 @@ from sqlalchemy.orm import Mapped, mapped_column
 from pydantic import BaseModel, ConfigDict
 from Repositories.database import Base
 
+# Role master: Tendra acceso a toda la capa de servicios
+# Role admin: Tendra acceso a la capa de usuarios
+# Role soporte: Tendra acceso a usuarios y login usuarios
+
+
 class UserRoleDTO(Base):
     __tablename__ = "users_role"
-    __table_args__ = {"schema": "inverclick"}
 
-    id: Mapped[int] = mapped_column(Integer, Identity(always=False, start=1), primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, Identity(
+        always=False, start=1), primary_key=True)
     role: Mapped[str] = mapped_column(String(100), nullable=False)
-    modules: Mapped[Optional[list[str]]] = mapped_column(ARRAY(String), nullable=True, default=list)
+    modules: Mapped[Optional[list[str]]] = mapped_column(
+        ARRAY(String), nullable=True, default=list)
 
 # --- Esquemas Pydantic con validación estricta (extra='forbid') ---
+
 
 class UserRoleCreateSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True, extra="forbid")
@@ -21,11 +28,13 @@ class UserRoleCreateSchema(BaseModel):
     role: str
     modules: Optional[list[str]] = []
 
+
 class UserRoleUpdateSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True, extra="forbid")
 
     role: Optional[str] = None
     modules: Optional[list[str]] = None
+
 
 class UserRoleResponseSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
