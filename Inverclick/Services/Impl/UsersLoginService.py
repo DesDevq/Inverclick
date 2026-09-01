@@ -6,6 +6,7 @@ from Utils.HttpResponses.userLoginHttpResponses import UserLoginHttpResponses
 from Utils.user_login_validator import UserLoginValidator
 from Services.Security.CryptPass import get_password_hash, verify_password
 
+
 def validateUserLogin(service: "UsersLoginService", loginDTO: UserLoginDTO | dict[str, Any]) -> UserLoginDTO:
     if isinstance(loginDTO, dict):
         user_id = loginDTO.get("user_id")
@@ -19,7 +20,8 @@ def validateUserLogin(service: "UsersLoginService", loginDTO: UserLoginDTO | dic
     invalid = service.validator.validate_user_login_dto_lengths(loginDTO)
     if invalid:
         field, min_len, max_len = invalid
-        raise service.http_responses.error_invalid_length(field, min_len, max_len)
+        raise service.http_responses.error_invalid_length(
+            field, min_len, max_len)
 
     if user_id and service.users_repository:
         user = service.users_repository.get_by_id(user_id)
@@ -31,18 +33,21 @@ def validateUserLogin(service: "UsersLoginService", loginDTO: UserLoginDTO | dic
 
     return login_dto
 
+
 class UsersLoginService:
     def __init__(
-        self, 
-        repository: IUsersLoginRepository, 
-        http_responses: UserLoginHttpResponses, 
+        self,
+        repository: IUsersLoginRepository,
+        http_responses: UserLoginHttpResponses,
         validator: UserLoginValidator,
-        users_repository: IUsuariosRepository | None = None
+        users_repository: IUsuariosRepository | None = None,
+        roles_repository=None
     ):
         self.repository = repository
         self.http_responses = http_responses
         self.validator = validator
         self.users_repository = users_repository
+        self.roles_repository = roles_repository
 
     def get_by_id(self, login_id: int) -> UserLoginDTO | None:
         login: UserLoginDTO | None = self.repository.get_by_id(login_id)
@@ -57,7 +62,8 @@ class UsersLoginService:
         return login
 
     def get_by_user_login(self, user_login: str) -> UserLoginDTO | None:
-        login: UserLoginDTO | None = self.repository.get_by_user_login(user_login)
+        login: UserLoginDTO | None = self.repository.get_by_user_login(
+            user_login)
         if login is None:
             raise self.http_responses.error_login_not_found()
         return login
@@ -70,7 +76,8 @@ class UsersLoginService:
         login_dto = validateUserLogin(self, loginDTO)
         # Hashear la contraseña antes de persistir en la base de datos
         if login_dto.user_password:
-            login_dto.user_password = get_password_hash(login_dto.user_password)
+            login_dto.user_password = get_password_hash(
+                login_dto.user_password)
 
         login: UserLoginDTO = self.repository.create(login_dto)
         if login is None:
@@ -81,19 +88,23 @@ class UsersLoginService:
         invalid = self.validator.validate_user_login_dto_lengths(login_data)
         if invalid:
             field, min_len, max_len = invalid
-            raise self.http_responses.error_invalid_length(field, min_len, max_len)
+            raise self.http_responses.error_invalid_length(
+                field, min_len, max_len)
 
         # Hashear la nueva contraseña si viene presente en la actualización
         if isinstance(login_data, dict):
             data_to_update = login_data.copy()
             if "user_password" in data_to_update and data_to_update["user_password"]:
-                data_to_update["user_password"] = get_password_hash(data_to_update["user_password"])
+                data_to_update["user_password"] = get_password_hash(
+                    data_to_update["user_password"])
         else:
             data_to_update = login_data
             if data_to_update.user_password:
-                data_to_update.user_password = get_password_hash(data_to_update.user_password)
+                data_to_update.user_password = get_password_hash(
+                    data_to_update.user_password)
 
-        login: UserLoginDTO | None = self.repository.update(login_id, data_to_update)
+        login: UserLoginDTO | None = self.repository.update(
+            login_id, data_to_update)
         if login is None:
             raise self.http_responses.error_login_not_updated()
         return login
@@ -113,8 +124,7 @@ class UsersLoginService:
             return None
         return login
 
-    def authenticate(self, user_login: str, plain_password: str) -> UserLoginDTO:
-        """Autentica las credenciales y el estado activo del usuario."""
+    def authenticate(self, user_login: str, plain_password: str) -> tuple[UserLoginDTO, str | None]:
         login = self.repository.get_by_user_login(user_login)
         if login is None or not login.user_password:
             raise self.http_responses.error_invalid_credentials()
@@ -122,4 +132,13 @@ class UsersLoginService:
             raise self.http_responses.error_invalid_credentials()
         if not login.active:
             raise self.http_responses.error_account_inactive()
-        return login
+
+        role_name = None
+        if self.users_repository and self.roles_repository:
+            user = self.users_repository.get_by_id(login.user_id)
+            if user and user.user_id_role:
+                role = self.roles_repository.get_by_id(user.user_id_role)
+                if role:
+                    role_name = role.role
+
+        return login, role_name
