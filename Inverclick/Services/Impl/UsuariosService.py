@@ -1,3 +1,4 @@
+import re
 from typing import Any
 from Repositories.IUsuariosRepository import IUsuariosRepository
 from Models.users import UserDTO
@@ -6,13 +7,26 @@ from Utils.HttpResponses.userHttpResponses import UserHttpResponses
 from Utils.user_validator import UserValidator
 
 
+# Patrón para validar formato de email: algo antes del @, el @, algo después, un punto, y algo después del punto
+EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+# Patrón para validar celular: solo números, entre 7 y 15 dígitos
+PHONE_PATTERN = re.compile(r"^\d{7,15}$")
+# Patrón para validar que el nombre/apellido NO contenga ningún dígito
+NAME_PATTERN = re.compile(r"^[^\d]+$")
+
+
 def validateUser(self, userDTO: UserDTO) -> UserDTO:
+    # userDTO puede llegar como diccionario o como objeto UserDTO ya armado;
+    # aquí extraemos los campos de la forma correcta según el caso
     if isinstance(userDTO, dict):
         email = userDTO.get("email")
         identification = userDTO.get("identification")
         identification_type = userDTO.get("identification_type")
         country_id = userDTO.get("country_id")
         user_id_role = userDTO.get("user_id_role")
+        name = userDTO.get("name")
+        last_name = userDTO.get("last_name")
+        phone_number = userDTO.get("phone_number")
         user_dto = UserDTO(**userDTO)
     else:
         email = userDTO.email
@@ -20,25 +34,47 @@ def validateUser(self, userDTO: UserDTO) -> UserDTO:
         identification_type = userDTO.identification_type
         country_id = userDTO.country_id
         user_id_role = getattr(userDTO, "user_id_role", None)
+        name = userDTO.name
+        last_name = userDTO.last_name
+        phone_number = userDTO.phone_number
         user_dto = userDTO
 
+    # Validación 1: longitud de todos los campos de texto (rangos definidos en UserValidator)
     invalid = self.validator.validate_user_dto_lengths(userDTO)
     if invalid:
         field, min_len, max_len = invalid
         raise self.http_responses.error_invalid_length(field, min_len, max_len)
 
+    # Validación 2: nombre y apellido no deben contener caracteres numéricos
+    if name and not NAME_PATTERN.match(name):
+        raise self.http_responses.error_invalid_name_format("name")
+    if last_name and not NAME_PATTERN.match(last_name):
+        raise self.http_responses.error_invalid_name_format("last_name")
+
+    # Validación 3: el email debe tener el formato correcto (@ y punto después del @)
+    if email and not EMAIL_PATTERN.match(email):
+        raise self.http_responses.error_invalid_email_format()
+
+    # Validación 4: el número de celular debe tener un formato válido (solo dígitos, 7-15 caracteres)
+    if phone_number and not PHONE_PATTERN.match(phone_number):
+        raise self.http_responses.error_invalid_phone_format()
+
+    # Validación extra (no pedida en el tablero, pero ya existía): el país debe existir en la BD
     if country_id:
         country = self.prefix_repository.get_by_id(country_id)
         if country is None:
             raise self.http_responses.error_country_not_found()
 
+    # Validación: el email no debe estar ya registrado por otro usuario
     if email and self.repository.get_by_email(email) is not None:
         raise self.http_responses.error_email_already_exists()
 
+    # Validación 5: la combinación identificación + tipo de documento no debe estar duplicada
     if identification and self.repository.get_by_identification(identification, identification_type) is not None:
         raise self.http_responses.error_identification_already_exists()
-    
+
     return user_dto
+
 
 class UsuariosService:
     def __init__(self, repository: IUsuariosRepository, prefix_repository: IPrefixRepository, http_responses: UserHttpResponses, validator: UserValidator):
@@ -48,22 +84,26 @@ class UsuariosService:
         self.validator = validator
 
     def get_by_id(self, user_id: int) -> UserDTO | None:
+        # Busca un usuario por su ID; si no existe, lanza error 404
         user: UserDTO | None = self.repository.get_by_id(user_id)
         if user is None:
             raise self.http_responses.error_user_not_found()
         return user
 
     def get_by_email(self, email: str) -> UserDTO | None:
+        # Busca un usuario por su email; si no existe, lanza error 404
         user: UserDTO | None = self.repository.get_by_email(email)
         if user is None:
             raise self.http_responses.error_user_not_found()
         return user
 
     def get_all(self, skip: int = 0, limit: int = 100) -> list[UserDTO]:
+        # Devuelve una lista paginada de todos los usuarios
         users: list[UserDTO] = self.repository.get_all(skip, limit)
         return users
 
     def create(self, userDTO: UserDTO) -> UserDTO:
+        # Corre todas las validaciones antes de guardar
         user_dto = validateUser(self, userDTO)
         user: UserDTO = self.repository.create(user_dto)
         if user is None:
@@ -71,10 +111,12 @@ class UsuariosService:
         return user
 
     def update(self, user_id: int, user_data: dict[str, Any] | UserDTO) -> UserDTO | None:
+        # Solo valida longitud en el update (las demás validaciones de formato no se repiten aquí)
         invalid = self.validator.validate_user_dto_lengths(user_data)
         if invalid:
             field, min_len, max_len = invalid
-            raise self.http_responses.error_invalid_length(field, min_len, max_len)
+            raise self.http_responses.error_invalid_length(
+                field, min_len, max_len)
 
         user: UserDTO | None = self.repository.update(user_id, user_data)
         if user is None:
@@ -82,6 +124,7 @@ class UsuariosService:
         return user
 
     def delete(self, user_id: int) -> bool:
+        # Elimina un usuario por su ID; si no se pudo borrar, lanza error
         success: bool = self.repository.delete(user_id)
         if not success:
             raise self.http_responses.error_user_not_deleted()

@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from Utils.HttpResponses.http_response import success_response
 from Models.users import UserDTO
 
+
 class UserHttpResponses:
     @staticmethod
     def success_created(userDTO: UserDTO) -> JSONResponse:
@@ -12,7 +13,7 @@ class UserHttpResponses:
     def success_get(userDTO: UserDTO) -> JSONResponse:
         return success_response(userDTO, "Usuario obtenido exitosamente", 200)
 
-    @staticmethod   
+    @staticmethod
     def success_get_all(users: list[UserDTO]) -> JSONResponse:
         return success_response(users, "Usuarios obtenidos exitosamente", 200)
 
@@ -63,3 +64,15 @@ class UserHttpResponses:
     @staticmethod
     def error_user_not_deleted() -> HTTPException:
         return HTTPException(status_code=400, detail="Usuario no eliminado")
+
+    @staticmethod
+    def error_invalid_email_format() -> HTTPException:
+        return HTTPException(status_code=400, detail="El formato del email no es válido")
+
+    @staticmethod
+    def error_invalid_phone_format() -> HTTPException:
+        return HTTPException(status_code=400, detail="El formato del número de celular no es válido")
+
+    @staticmethod
+    def error_invalid_name_format(field: str) -> HTTPException:
+        return HTTPException(status_code=400, detail=f"El campo {field} no puede contener caracteres numéricos")
