@@ -17,10 +17,8 @@ class LeadDTO(Base):
     # Usuario interesado (cliente potencial).
     user_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("users.id"), nullable=False)
-    # TODO: cuando exista la tabla real de Propiedades (CA2), cambiar este
-    # ForeignKey de "properties_placeholder.id" a la tabla definitiva.
     property_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("properties_placeholder.id"), nullable=False)
+        Integer, ForeignKey("real_state.id"), nullable=False)
     status: Mapped[str] = mapped_column(
         String(50), nullable=False, default="nuevo")
     description: Mapped[Optional[str]] = mapped_column(

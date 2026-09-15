@@ -24,9 +24,8 @@ class SaleDTO(Base):
     # Usuario comprador (cliente final).
     buyer_user_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("users.id"), nullable=False)
-    # TODO: cambiar a la tabla real de Propiedades cuando exista (CA2).
     property_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("properties_placeholder.id"), nullable=False)
+        Integer, ForeignKey("real_state.id"), nullable=False)
     sale_price: Mapped[Optional[float]] = mapped_column(
         Numeric, nullable=True)
     created_at: Mapped[Optional[datetime]] = mapped_column(

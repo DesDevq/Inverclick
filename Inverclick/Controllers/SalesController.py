@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from Services.ISaleService import ISaleService
 from Repositories.SaleRepository import SaleRepository
 from Repositories.LeadRepository import LeadRepository
-from Repositories.PropertyPlaceholderRepository import PropertyPlaceholderRepository
+from Repositories.RealStateRepository import RealStateRepository
 from Services.Impl.SaleService import SaleService
 from Utils.HttpResponses.saleHttpResponses import SaleHttpResponses
 from Repositories.database import get_db
@@ -16,9 +16,9 @@ router = APIRouter(prefix="/sales", tags=["Sales"])
 def get_sale_service(db: Session = Depends(get_db)) -> ISaleService:
     repository = SaleRepository(db)
     lead_repository = LeadRepository(db)
-    property_repository = PropertyPlaceholderRepository(db)
+    real_state_repository = RealStateRepository(db)
     http_responses = SaleHttpResponses()
-    return SaleService(repository, lead_repository, property_repository, http_responses)
+    return SaleService(repository, lead_repository, real_state_repository, http_responses)
 
 
 @router.get("/{sale_id}", response_model=SaleResponseSchema, dependencies=[Depends(require_module("sales"))])
