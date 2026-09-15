@@ -6,6 +6,7 @@ from Controllers.Prefixcontroller import router as prefix_router
 from Controllers.UsersRoleController import router as users_role_router
 from Controllers.UsersLoginController import router as users_login_router
 from Controllers.ConstructoraController import router as constructora_router
+from Controllers.RealStateController import router as real_state_router
 
 # Verificar la conexión y estructura de la base de datos al arrancar
 verify_db_connection_and_schema()
@@ -31,3 +32,4 @@ app.include_router(prefix_router)
 app.include_router(users_role_router)
 app.include_router(users_login_router)
 app.include_router(constructora_router)
+app.include_router(real_state_router)
