@@ -42,7 +42,7 @@ def get_users_login_service(db: Session = Depends(get_db)) -> IUsersLoginService
 # Sin protección: nadie tiene token todavía al momento de loguearse
 @router.post("/login", response_model=TokenResponseSchema)
 def login(credentials: LoginRequestSchema, service: IUsersLoginService = Depends(get_users_login_service)):
-    login_data, role_name = service.authenticate(
+    login_data, role_name, constructora_id = service.authenticate(
         credentials.user_login, credentials.user_password)
 
     token_data = {
@@ -50,6 +50,11 @@ def login(credentials: LoginRequestSchema, service: IUsersLoginService = Depends
         "user_login": login_data.user_login,
         "role": role_name
     }
+
+    # Solo se agrega constructora_id al token si el usuario realmente tiene una asignada
+    if constructora_id is not None:
+        token_data["constructora_id"] = constructora_id
+
     access_token = create_access_token(token_data)
 
     return TokenResponseSchema(access_token=access_token)

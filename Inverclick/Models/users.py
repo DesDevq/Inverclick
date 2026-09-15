@@ -25,6 +25,8 @@ class UserDTO(Base):
         Integer, ForeignKey("countries.id"), nullable=True)
     user_id_role: Mapped[Optional[int]] = mapped_column(
         Integer, ForeignKey("users_role.id"), nullable=True)
+    constructora_id: Mapped[Optional[int]] = mapped_column(
+        Integer, ForeignKey("constructora.id"), nullable=True)
     residence_city: Mapped[Optional[str]] = mapped_column(
         String(20), nullable=True)
     street_address: Mapped[Optional[str]] = mapped_column(
@@ -58,6 +60,7 @@ class UserCreateSchema(BaseModel):
     identification_type: str
     country_id: Optional[int] = None
     user_id_role: Optional[int] = None
+    constructora_id: Optional[int] = None
     residence_city: Optional[str] = None
     street_address: Optional[str] = None
     zip_code: Optional[str] = None
@@ -79,6 +82,7 @@ class UserUpdateSchema(BaseModel):
     identification_type: Optional[str] = None
     country_id: Optional[int] = None
     user_id_role: Optional[int] = None
+    constructora_id: Optional[int] = None
     residence_city: Optional[str] = None
     street_address: Optional[str] = None
     zip_code: Optional[str] = None
@@ -101,6 +105,7 @@ class UserResponseSchema(BaseModel):
     identification_type: str
     country_id: Optional[int] = None
     user_id_role: Optional[int] = None
+    constructora_id: Optional[int] = None
     residence_city: Optional[str] = None
     street_address: Optional[str] = None
     zip_code: Optional[str] = None

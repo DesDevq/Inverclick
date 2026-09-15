@@ -48,3 +48,11 @@ def require_module(module_name: str):
         )
 
     return dependency
+
+
+def get_current_user_context(payload: dict = Depends(get_current_payload)) -> dict:
+    return {
+        "user_id": payload.get("sub"),
+        "role": payload.get("role"),
+        "constructora_id": payload.get("constructora_id")
+    }
