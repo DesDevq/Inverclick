@@ -124,7 +124,7 @@ class UsersLoginService:
             return None
         return login
 
-    def authenticate(self, user_login: str, plain_password: str) -> tuple[UserLoginDTO, str | None]:
+    def authenticate(self, user_login: str, plain_password: str) -> tuple[UserLoginDTO, str | None, int | None]:
         login = self.repository.get_by_user_login(user_login)
         if login is None or not login.user_password:
             raise self.http_responses.error_invalid_credentials()
@@ -134,11 +134,17 @@ class UsersLoginService:
             raise self.http_responses.error_account_inactive()
 
         role_name = None
+        # constructora_id solo se llena si el rol del usuario es "constructora";
+        # para cualquier otro rol (admin, master, soporte) se queda en None
+        constructora_id = None
         if self.users_repository and self.roles_repository:
             user = self.users_repository.get_by_id(login.user_id)
             if user and user.user_id_role:
                 role = self.roles_repository.get_by_id(user.user_id_role)
                 if role:
                     role_name = role.role
+                    if role_name == "constructora":
+                        constructora_id = getattr(
+                            user, "constructora_id", None)
 
-        return login, role_name
+        return login, role_name, constructora_id

@@ -10,6 +10,8 @@ from Controllers.LeadsController import router as leads_router
 from Controllers.SalesController import router as sales_router
 from Controllers.PropertyPlaceholderController import router as property_placeholder_router
 from Services.Security.LoggingMiddleware import LoggingMiddleware
+from Controllers.ConstructoraController import router as constructora_router
+from Controllers.RealStateController import router as real_state_router
 
 # Verificar la conexión y estructura de la base de datos al arrancar
 verify_db_connection_and_schema()
@@ -41,3 +43,5 @@ app.include_router(logs_router)
 app.include_router(leads_router)
 app.include_router(sales_router)
 app.include_router(property_placeholder_router)
+app.include_router(constructora_router)
+app.include_router(real_state_router)
