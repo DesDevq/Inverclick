@@ -11,6 +11,7 @@ from Controllers.SalesController import router as sales_router
 from Services.Security.LoggingMiddleware import LoggingMiddleware
 from Controllers.ConstructoraController import router as constructora_router
 from Controllers.RealStateController import router as real_state_router
+from Controllers.AuthController import router as auth_router
 
 # Verificar la conexión y estructura de la base de datos al arrancar
 verify_db_connection_and_schema()
@@ -30,7 +31,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# CA4: middleware de auditoría. Se ejecuta en cada petición automáticamente.
+# middleware de auditoría. Se ejecuta en cada petición automáticamente.
 app.add_middleware(LoggingMiddleware)
 
 # Registrar los routers
@@ -43,3 +44,4 @@ app.include_router(leads_router)
 app.include_router(sales_router)
 app.include_router(constructora_router)
 app.include_router(real_state_router)
+app.include_router(auth_router)
