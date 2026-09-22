@@ -1,25 +1,33 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from Repositories.database import get_db
-from Services.Security import KeycloakService
+from Services.Security.KeycloakService import KeycloakService, KeycloakError
 from Services.Security.JWTHandler import create_access_token
 from Models.users_login import TokenResponseSchema
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
+def get_keycloak_service() -> KeycloakService:
+    return KeycloakService()
+
+
 @router.get("/keycloak/login")
-def keycloak_login():
+def keycloak_login(keycloak: KeycloakService = Depends(get_keycloak_service)):
     """
     Redirige al usuario a la pantalla de login de Keycloak.
     """
-    url = KeycloakService.get_keycloak_login_url()
+    url = keycloak.get_authorization_url()
     return RedirectResponse(url)
 
 
 @router.get("/keycloak/callback", response_model=TokenResponseSchema)
-def keycloak_callback(code: str, db: Session = Depends(get_db)):
+def keycloak_callback(
+    code: str,
+    db: Session = Depends(get_db),
+    keycloak: KeycloakService = Depends(get_keycloak_service)
+):
     """
     Keycloak redirige aquí después de que el usuario inicia sesión,
     mandando un 'code' en la URL. Con ese code:
@@ -28,8 +36,17 @@ def keycloak_callback(code: str, db: Session = Depends(get_db)):
     3. Buscamos o creamos ese usuario en NUESTRA base de datos (CA2)
     4. Generamos NUESTRO propio JWT y se lo devolvemos
     """
-    token_data = KeycloakService.exchange_code_for_token(code)
-    userinfo = KeycloakService.get_userinfo(token_data["access_token"])
+    try:
+        token_data = keycloak.exchange_code_for_tokens(code)
+        userinfo = keycloak.get_user_info(token_data["access_token"])
+    except KeycloakError as e:
+        status_map = {
+            KeycloakError.NOT_CONFIGURED: 500,
+            KeycloakError.INVALID_CODE: 400,
+            KeycloakError.UNAVAILABLE: 503,
+        }
+        raise HTTPException(status_code=status_map.get(
+            e.kind, 500), detail=e.message)
 
     email = userinfo.get("email")
     external_id = userinfo.get("sub")
