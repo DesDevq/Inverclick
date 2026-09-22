@@ -1,69 +1,53 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from Repositories.database import get_db
-from Services.Security.KeycloakService import KeycloakService, KeycloakError
+from Repositories.UsersLoginRepository import UsersLoginRepository
+from Repositories.UsuariosRepository import UsersRepository
+from Repositories.UsersRoleRepository import UsersRoleRepository
+from Services.Security.KeycloakService import KeycloakService
+from Services.Impl.SsoLoginService import SsoLoginService
 from Services.Security.JWTHandler import create_access_token
+from Utils.HttpResponses.ssoHttpResponses import SsoHttpResponses
 from Models.users_login import TokenResponseSchema
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
-def get_keycloak_service() -> KeycloakService:
-    return KeycloakService()
+def get_sso_login_service(db: Session = Depends(get_db)) -> SsoLoginService:
+    keycloak = KeycloakService()
+    login_repository = UsersLoginRepository(db)
+    users_repository = UsersRepository(db)
+    roles_repository = UsersRoleRepository(db)
+    http_responses = SsoHttpResponses()
+    return SsoLoginService(keycloak, login_repository, users_repository, roles_repository, http_responses)
 
 
 @router.get("/keycloak/login")
-def keycloak_login(keycloak: KeycloakService = Depends(get_keycloak_service)):
+def keycloak_login(sso: SsoLoginService = Depends(get_sso_login_service)):
     """
     Redirige al usuario a la pantalla de login de Keycloak.
     """
-    url = keycloak.get_authorization_url()
+    url = sso.get_authorization_url()
     return RedirectResponse(url)
 
 
 @router.get("/keycloak/callback", response_model=TokenResponseSchema)
-def keycloak_callback(
-    code: str,
-    db: Session = Depends(get_db),
-    keycloak: KeycloakService = Depends(get_keycloak_service)
-):
+def keycloak_callback(code: str, sso: SsoLoginService = Depends(get_sso_login_service)):
     """
-    Keycloak redirige aquí después de que el usuario inicia sesión,
-    mandando un 'code' en la URL. Con ese code:
-    1. Lo cambiamos por un token real de Keycloak
-    2. Preguntamos quién es el usuario (email, external_id)
-    3. Buscamos o creamos ese usuario en NUESTRA base de datos (CA2)
-    4. Generamos NUESTRO propio JWT y se lo devolvemos
+    Keycloak redirige aquí después de que el usuario inicia sesión.
+    CA2: busca o crea el usuario local, asigna rol.
+    Genera el MISMO tipo de JWT que el login local.
     """
-    try:
-        token_data = keycloak.exchange_code_for_tokens(code)
-        userinfo = keycloak.get_user_info(token_data["access_token"])
-    except KeycloakError as e:
-        status_map = {
-            KeycloakError.NOT_CONFIGURED: 500,
-            KeycloakError.INVALID_CODE: 400,
-            KeycloakError.UNAVAILABLE: 503,
-        }
-        raise HTTPException(status_code=status_map.get(
-            e.kind, 500), detail=e.message)
+    login_data, role_name, constructora_id = sso.authenticate_with_code(code)
 
-    email = userinfo.get("email")
-    external_id = userinfo.get("sub")
-
-    # --- PUNTO DE INTEGRACIÓN (CA2) ---
-    # Aquí se llama a la función
-    # login_data, role_name = auth_service.find_or_create_from_keycloak(email, external_id)
-    #
-
-    # <-- reemplazar cuando esté la función en usersloginservice
-    login_data, role_name = None, None
-
-    jwt_payload = {
+    token_data = {
         "sub": str(login_data.user_id),
         "user_login": login_data.user_login,
         "role": role_name,
     }
-    access_token = create_access_token(jwt_payload)
+    if constructora_id is not None:
+        token_data["constructora_id"] = constructora_id
 
+    access_token = create_access_token(token_data)
     return TokenResponseSchema(access_token=access_token)

@@ -1,69 +1,3 @@
-<<<<<<< HEAD
-import os
-import httpx
-from urllib.parse import urlencode
-
-KEYCLOAK_URL = os.getenv("KEYCLOAK_URL")
-KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM")
-KEYCLOAK_CLIENT_ID = os.getenv("KEYCLOAK_CLIENT_ID")
-KEYCLOAK_CLIENT_SECRET = os.getenv("KEYCLOAK_CLIENT_SECRET")
-KEYCLOAK_REDIRECT_URI = os.getenv("KEYCLOAK_REDIRECT_URI")
-
-
-def get_keycloak_login_url() -> str:
-    """
-    Arma la URL a la que hay que redirigir al usuario para que inicie
-    sesión en la pantalla de Keycloak.
-    """
-    base_url = f"{KEYCLOAK_URL}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/auth"
-    params = {
-        "client_id": KEYCLOAK_CLIENT_ID,
-        "response_type": "code",
-        "redirect_uri": KEYCLOAK_REDIRECT_URI,
-        "scope": "openid email profile",
-    }
-    return f"{base_url}?{urlencode(params)}"
-
-
-def exchange_code_for_token(code: str) -> dict:
-    """
-    Intercambia el 'code' que Keycloak mandó en el callback por un
-    access_token real de Keycloak (usando el client_secret, por eso
-    esto SOLO puede hacerse desde el backend, nunca desde el navegador).
-    """
-    token_url = f"{KEYCLOAK_URL}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token"
-    data = {
-        "grant_type": "authorization_code",
-        "code": code,
-        "redirect_uri": KEYCLOAK_REDIRECT_URI,
-        "client_id": KEYCLOAK_CLIENT_ID,
-        "client_secret": KEYCLOAK_CLIENT_SECRET,
-    }
-
-    response = httpx.post(token_url, data=data)
-    if response.status_code != 200:
-        raise Exception(
-            f"Error al intercambiar el código con Keycloak: {response.text}")
-
-    return response.json()
-
-
-def get_userinfo(access_token: str) -> dict:
-    """
-    Con el access_token de Keycloak, pregunta quién es el usuario:
-    su email, nombre, y el 'sub' (external_id único que Keycloak
-    le asigna a cada usuario).
-    """
-    userinfo_url = f"{KEYCLOAK_URL}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/userinfo"
-    headers = {"Authorization": f"Bearer {access_token}"}
-
-    response = httpx.get(userinfo_url, headers=headers)
-    if response.status_code != 200:
-        raise Exception(
-            f"Error al obtener userinfo de Keycloak: {response.text}")
-
-    return response.json()
-=======
 # KeycloakService.py
 # CA4: toda la comunicación con el servidor Keycloak vive AQUÍ y solo aquí.
 #
@@ -77,9 +11,6 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from typing import Any
-from dotenv import load_dotenv
-
-load_dotenv()
 
 REQUEST_TIMEOUT_SECONDS = 10
 
@@ -109,10 +40,9 @@ class KeycloakService:
     ):
         # Si no se pasan valores, se leen de las variables del archivo .env
         self.server_url = (server_url or os.getenv(
-            "KEYCLOAK_SERVER_URL", "")).rstrip("/")
+            "KEYCLOAK_URL", "")).rstrip("/")
         self.realm = realm or os.getenv("KEYCLOAK_REALM", "")
         self.client_id = client_id or os.getenv("KEYCLOAK_CLIENT_ID", "")
-        # Opcional: los clientes "públicos" de Keycloak no tienen secreto.
         self.client_secret = client_secret or os.getenv(
             "KEYCLOAK_CLIENT_SECRET", "")
         self.redirect_uri = redirect_uri or os.getenv(
@@ -126,7 +56,7 @@ class KeycloakService:
     def _ensure_configured(self) -> None:
         missing = [
             name for name, value in (
-                ("KEYCLOAK_SERVER_URL", self.server_url),
+                ("KEYCLOAK_URL", self.server_url),
                 ("KEYCLOAK_REALM", self.realm),
                 ("KEYCLOAK_CLIENT_ID", self.client_id),
                 ("KEYCLOAK_REDIRECT_URI", self.redirect_uri),
@@ -191,7 +121,6 @@ class KeycloakService:
             with urllib.request.urlopen(request, timeout=REQUEST_TIMEOUT_SECONDS) as response:
                 return json.loads(response.read().decode("utf-8"))
         except urllib.error.HTTPError as e:
-            # 4xx: Keycloak rechazó lo enviado (code inválido/expirado, token malo)
             if 400 <= e.code < 500:
                 raise KeycloakError(
                     error_kind_on_4xx, f"Keycloak rechazó la solicitud ({e.code})")
@@ -200,4 +129,3 @@ class KeycloakService:
         except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as e:
             raise KeycloakError(
                 KeycloakError.UNAVAILABLE, f"No se pudo contactar a Keycloak: {e}")
->>>>>>> Inverclick/LuisaRamirez

@@ -27,3 +27,4 @@ CREATE TABLE IF NOT EXISTS public.logs (
     action_summary character varying(255) NOT NULL,
     created_at timestamp without time zone NOT NULL
 );
+
