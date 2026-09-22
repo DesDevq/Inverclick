@@ -27,6 +27,11 @@ class UserLoginDTO(Base):
     active: Mapped[Optional[bool]] = mapped_column(
         Boolean, nullable=True, default=True)
 
+    identity_provider: Mapped[str] = mapped_column(
+        String(50), nullable=False, server_default="local")
+    external_id: Mapped[Optional[str]] = mapped_column(
+        String(255), nullable=True)
+
 # --- Esquemas Pydantic con validación estricta (extra='forbid') ---
 
 
@@ -53,6 +58,7 @@ class UserLoginUpdateSchema(BaseModel):
     user_password: Optional[str] = None
     active: Optional[bool] = None
 
+        
 
 class UserLoginResponseSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -63,7 +69,8 @@ class UserLoginResponseSchema(BaseModel):
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
     active: Optional[bool] = True
-
+    identity_provider: str = "local"
+    external_id: Optional[str] = None
 
 class TokenResponseSchema(BaseModel):
     access_token: str
