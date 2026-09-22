@@ -11,3 +11,7 @@ __pycache__/
 # Supabase local
 supabase/.branches/
 supabase/.temp/
+
+supabase/.temp/
+supabase/snippets/
+respaldo_completo.sql

@@ -22,6 +22,14 @@ class UsersLoginRepository:
         statement = select(UserLoginDTO).where(UserLoginDTO.user_login == user_login)
         return self.db.execute(statement).scalar_one_or_none()
 
+    def get_by_external_id(self, identity_provider: str, external_id: str) -> UserLoginDTO | None:
+        """Obtiene el login de una cuenta externa (ej. Keycloak) por su ID externo."""
+        statement = select(UserLoginDTO).where(
+            UserLoginDTO.identity_provider == identity_provider,
+            UserLoginDTO.external_id == external_id
+        )
+        return self.db.execute(statement).scalar_one_or_none()
+
     def get_all(self, skip: int = 0, limit: int = 100) -> list[UserLoginDTO]:
         """Obtiene una lista paginada de todos los registros de login."""
         statement = select(UserLoginDTO).offset(skip).limit(limit)
