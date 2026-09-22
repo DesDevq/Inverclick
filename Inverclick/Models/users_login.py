@@ -26,6 +26,11 @@ class UserLoginDTO(Base):
         timezone=True), nullable=True, default=datetime.utcnow, onupdate=datetime.utcnow)
     active: Mapped[Optional[bool]] = mapped_column(
         Boolean, nullable=True, default=True)
+    # Trazabilidad de origen: 'local' (usuario/contraseña) o 'keycloak' (SSO).
+    identity_provider: Mapped[str] = mapped_column(
+        String, nullable=False, default="local", server_default="local")
+    # ID del usuario en Keycloak (claim 'sub'). Solo se llena para cuentas SSO.
+    external_id: Mapped[Optional[str]] = mapped_column(String, nullable=True)
 
 # --- Esquemas Pydantic con validación estricta (extra='forbid') ---
 
