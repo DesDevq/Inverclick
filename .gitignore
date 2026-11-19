@@ -1,5 +1,6 @@
 # Entorno virtual
 .venv/
+venv/
 
 # Variables de entorno
 .env
@@ -14,4 +15,3 @@ supabase/.temp/
 
 supabase/.temp/
 supabase/snippets/
-respaldo_completo.sql

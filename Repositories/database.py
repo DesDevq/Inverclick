@@ -1,0 +1,96 @@
+# database.py
+import os
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, DeclarativeBase
+from dotenv import load_dotenv
+
+# Cargar las variables de entorno
+load_dotenv()
+
+# Obtener la URL (Asegúrate de que no devuelva None)
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if DATABASE_URL and DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg2://", 1)
+
+# Crear el engine con search_path configurado al esquema inverclick
+engine = create_engine(
+    DATABASE_URL, 
+    echo=False,
+    pool_pre_ping=True,  # Para verificar la conexión antes de usarla
+    pool_recycle=300,
+    connect_args={
+        "options": "-c search_path=inverclick=public",
+        "connect_timeout": 15,
+        "keepalives": 1,
+        "keepalives_idle": 30,
+        "keepalives_interval": 10,
+        "keepalives_count": 5,
+         } if DATABASE_URL and DATABASE_URL.startswith("postgresql") else {}
+)
+
+#pull de conexiones, conexion constante keepalive, con el pull de conexiones se considera que siempre haya una conexion abierta,
+#se ahorra tiempos de respuestas por cada endpoint
+
+# Configurar la fábrica de sesiones
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# Clase base para definir nuestros modelos (Sintaxis SQLAlchemy 2.0)
+class Base(DeclarativeBase):
+    pass
+
+# Dependencia para inyectar la sesión en tus rutas o servicios
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+def get_db_session():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+# Función para verificar la conexión y la estructura de las tablas sin alterarlas
+def verify_db_connection_and_schema():
+    from sqlalchemy import inspect, text
+    from Models.users import UserDTO  # Importación diferida para evitar ciclos
+    
+    try:
+        # 1. Verificar la conexión básica ejecutando una consulta rápida
+        with engine.connect() as connection:
+            connection.execute(text("SELECT 1"))
+            print("DATABASE: Conexión establecida con éxito.")
+            
+            # 2. Inspeccionar la base de datos
+            inspector = inspect(engine)
+            table_name = UserDTO.__tablename__
+            schema = UserDTO.__table__.schema
+            
+            # Verificar si la tabla existe
+            if not inspector.has_table(table_name, schema=schema):
+                if schema and inspector.has_table(table_name):
+                    schema = None
+                else:
+                    print(f"DATABASE ERROR: La tabla '{table_name}' no existe en la base de datos.")
+                    return False
+                
+            # 3. Verificar que las columnas coincidan
+            db_columns = {col["name"]: col for col in inspector.get_columns(table_name, schema=schema)}
+            model_columns = UserDTO.__table__.columns
+            
+            for col in model_columns:
+                if col.name not in db_columns:
+                    print(f"DATABASE ERROR: La columna '{col.name}' definida en el modelo no existe en la tabla real.")
+                    return False
+            
+            print(f"DATABASE: Estructura de la tabla '{table_name}' verificada y correcta.")
+            return True
+            
+    except Exception as e:
+        print(f"DATABASE ERROR: Fallo al verificar la conexión o estructura: {e}")
+        return False
+
