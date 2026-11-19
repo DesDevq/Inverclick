@@ -8,7 +8,7 @@ from Models.rag import RagChunkDTO
 #para evitar usar codigo sql se puede hacer las consultas y modificaciones desdes el codigo se llama orm, se utiliza para base de datos relacionales
 
 class RagRepository:
-    def _init_(self, db: Session):
+    def __init__(self, db: Session):
         self.db = db
 
     def count(self) -> int:

@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Indexa los PDFs de data/rag_pdfs en Supabase con pgvector.
+"""Indexa los PDFs de rag_pdfs en Supabase con pgvector.
 
 Uso:
-    .venv/bin/python scripts/rag_ingest.py
-    .venv/bin/python scripts/rag_ingest.py --reset
+    python scripts\rag_ingest.py
+    python scripts\rag_ingest.py --reset
 """
 
 #convierte todos los pdfs en chunks de texto, genera embeddings y los guarda en la base de datos supabase
 
-from _future_ import annotations
+from __future__ import annotations
 
 import argparse
 import json
@@ -20,7 +20,7 @@ from pathlib import Path
 from openai import OpenAI
 from pypdf import PdfReader
 
-PROJECT_ROOT = Path(_file_).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from Models.rag import RagChunkDTO  # noqa: E402
@@ -109,7 +109,7 @@ def iter_pdfs() -> list[Path]:
         raise FileNotFoundError(
             f"No existe {PDF_ROOT}. Ejecuta primero scripts/rag_build_pdfs.py"
         )
-    return sorted(PDF_ROOT.glob(".pdf")) + sorted((PDF_ROOT / "proyectos").glob(".pdf"))
+    return sorted(PDF_ROOT.glob("*.pdf")) + sorted((PDF_ROOT / "proyectos").glob("*.pdf"))
 
 
 def main() -> None:
@@ -201,5 +201,5 @@ def main() -> None:
         db.close()
 
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     main()

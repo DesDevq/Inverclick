@@ -33,7 +33,7 @@ Reglas obligatorias:
 
 
 class RagService(IRagService):
-    def _init_(self, repository: RagRepository):
+    def __init__(self, repository: RagRepository):
         self.repository = repository
         self.embedding_client = OpenAI(
             api_key=settings.embedding_api_key,

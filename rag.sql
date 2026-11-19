@@ -1,4 +1,4 @@
-create extension if not exists vector with schema extensions;
+create extension if not exists vector with schema public;
 
 create table if not exists public.rag_chunks (
     id          bigint generated always as identity primary key,
@@ -7,7 +7,7 @@ create table if not exists public.rag_chunks (
     page        integer,
     chunk_index integer not null,
     content     text not null,
-    embedding   extensions.vector(1024) not null,
+    embedding   public.vector(1024) not null,
     metadata    jsonb not null default '{}'::jsonb,
     created_at  timestamptz not null default now(),
     constraint rag_chunks_source_chunk_unique unique (source, chunk_index)
@@ -15,7 +15,7 @@ create table if not exists public.rag_chunks (
 
 create index if not exists rag_chunks_embeddings_hnsw
     on public.rag_chunks
-    using hnsw (embedding extensions.vector_cosine_ops)
+    using hnsw (embedding public.vector_cosine_ops)
     with (m = 16, ef_construction = 64);
 
 create index if not exists rag_chunks_source_idx

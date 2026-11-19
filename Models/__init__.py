@@ -1,34 +1,20 @@
-from Models.audit_logs import AuditLogDTO
-from Models.banks import BankDTO
-from Models.construction_companies import ConstructionCompanyDTO
-from Models.construction_phases import ConstructionPhaseDTO
-from Models.countries import Country
-from Models.currencies import Currency
-from Models.id_types import IdType
-from Models.leads import LeadDTO
-from Models.num_prefix import NumPrefix
-from Models.property_sold import PropertySoldCreateSchema, PropertySoldDTO, PropertySoldResponseSchema
+from Models.constructora import ConstructoraDTO
+from Models.lead import LeadDTO
+from Models.log import LogDTO
 from Models.rag import RagChunkDTO
-from Models.real_estate import RealEstateDTO
+from Models.real_state import RealStateDTO
+from Models.sale import SaleDTO
 from Models.users import UserDTO
 from Models.users_login import UserLoginDTO
 from Models.users_role import UserRoleDTO
 
-_all_ = [
-    "AuditLogDTO",
-    "BankDTO",
-    "ConstructionCompanyDTO",
-    "ConstructionPhaseDTO",
-    "Country",
-    "Currency",
-    "IdType",
+__all__ = [
+    "ConstructoraDTO",
     "LeadDTO",
-    "NumPrefix",
-    "PropertySoldCreateSchema",
-    "PropertySoldDTO",
-    "PropertySoldResponseSchema",
+    "LogDTO",
     "RagChunkDTO",
-    "RealEstateDTO",
+    "RealStateDTO",
+    "SaleDTO",
     "UserDTO",
     "UserLoginDTO",
     "UserRoleDTO",

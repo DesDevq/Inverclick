@@ -20,7 +20,7 @@ engine = create_engine(
     pool_pre_ping=True,  # Para verificar la conexión antes de usarla
     pool_recycle=300,
     connect_args={
-        "options": "-c search_path=inverclick=public",
+        "options": "-c search_path=public,extensions",
         "connect_timeout": 15,
         "keepalives": 1,
         "keepalives_idle": 30,

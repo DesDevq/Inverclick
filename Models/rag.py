@@ -13,8 +13,8 @@ EMBEDDING_DIMENSIONS = 1024
 
 
 class RagChunkDTO(Base):
-    _tablename_ = "rag_chunks"
-    _table_args_ = {"schema": "public"}
+    __tablename__ = "rag_chunks"
+    __table_args__ = {"schema": "public"}
 
     id: Mapped[int] = mapped_column(BigInteger, Identity(always=True), primary_key=True)
     source: Mapped[str] = mapped_column(Text, nullable=False)
