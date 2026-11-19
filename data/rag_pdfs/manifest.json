@@ -1,0 +1,307 @@
+{
+  "generated_at": "2026-11-14T03:54:06",
+  "source": "https://www.inverclick.com",
+  "documents": [
+    {
+      "file": "00_resumen_inverclick.pdf",
+      "title": "Inverclick - Resumen institucional",
+      "subtitle": "Qué es Inverclick, a quién está dirigido y qué ofrece",
+      "sources": [
+        "https://www.inverclick.com/about-us",
+        "https://www.inverclick.com/financing",
+        "https://www.inverclick.com/policy"
+      ],
+      "category": "general"
+    },
+    {
+      "file": "01_institucional.pdf",
+      "title": "Inverclick - Institucional",
+      "subtitle": "Quiénes somos, qué hacemos y cómo funciona la plataforma",
+      "sources": [
+        "https://www.inverclick.com/home",
+        "https://www.inverclick.com/about-us"
+      ],
+      "category": "general"
+    },
+    {
+      "file": "02_financiacion.pdf",
+      "title": "Inverclick - Financiación",
+      "subtitle": "Crédito hipotecario, leasing habitacional y requisitos",
+      "sources": [
+        "https://www.inverclick.com/financing"
+      ],
+      "category": "general"
+    },
+    {
+      "file": "03_politica_privacidad.pdf",
+      "title": "Política de privacidad y tratamiento de datos personales",
+      "subtitle": "Inverclick S.A.S - Versión 2024",
+      "sources": [
+        "https://www.inverclick.com/policy"
+      ],
+      "category": "legal"
+    },
+    {
+      "file": "04_terminos_condiciones.pdf",
+      "title": "Términos y condiciones de la plataforma y app de Inverclick",
+      "subtitle": "Condiciones de uso de la plataforma",
+      "sources": [
+        "https://www.inverclick.com/terms-conditions"
+      ],
+      "category": "legal"
+    },
+    {
+      "file": "05_app_movil.pdf",
+      "title": "Inverclick - App móvil",
+      "subtitle": "Invierte en propiedad raíz desde el exterior",
+      "sources": [
+        "https://www.inverclick.com/app"
+      ],
+      "category": "general"
+    },
+    {
+      "file": "06_blog_inverclick.pdf",
+      "title": "Blog de Inverclick",
+      "subtitle": "6 artículos de educación financiera e inversión",
+      "sources": [
+        "https://www.inverclick.com/blog/arriendos-colombia-tope-legal",
+        "https://www.inverclick.com/blog/certificado-tradicion-libertad-como-leerlo",
+        "https://www.inverclick.com/blog/costos-comprar-vivienda-colombia",
+        "https://www.inverclick.com/blog/precio-vis-2026-salario-minimo",
+        "https://www.inverclick.com/blog/rentabilidad-bruta-neta-plusvalia",
+        "https://www.inverclick.com/blog/desistimientos-vivienda-nueva-2026"
+      ],
+      "category": "blog"
+    },
+    {
+      "file": "proyectos/01_natura-living.pdf",
+      "title": "Natura Living",
+      "subtitle": "Ficha de proyecto inmobiliario",
+      "sources": [
+        "https://www.inverclick.com/projects/00bf6fb1-c37b-432d-a637-488f91dda0fb/03a84d42-3b87-4504-b03f-dff6908a84ee"
+      ],
+      "category": "proyecto",
+      "project_id": "00bf6fb1-c37b-432d-a637-488f91dda0fb"
+    },
+    {
+      "file": "proyectos/02_fiorenza-de-la-pradera.pdf",
+      "title": "Fiorenza de la Pradera",
+      "subtitle": "Ficha de proyecto inmobiliario",
+      "sources": [
+        "https://www.inverclick.com/projects/0158fd44-4140-48e7-92af-2fbe780555f0/c93a7f65-ad05-4f19-bc66-d1f4072a3c28"
+      ],
+      "category": "proyecto",
+      "project_id": "0158fd44-4140-48e7-92af-2fbe780555f0"
+    },
+    {
+      "file": "proyectos/03_camino-del-rio.pdf",
+      "title": "Camino del Río",
+      "subtitle": "Ficha de proyecto inmobiliario",
+      "sources": [
+        "https://www.inverclick.com/projects/0246d4f0-0502-49ed-b17a-03222715c108/1143496c-4c8e-4094-84ac-b069ed50bc79"
+      ],
+      "category": "proyecto",
+      "project_id": "0246d4f0-0502-49ed-b17a-03222715c108"
+    },
+    {
+      "file": "proyectos/04_verdi.pdf",
+      "title": "Verdi",
+      "subtitle": "Ficha de proyecto inmobiliario",
+      "sources": [
+        "https://www.inverclick.com/projects/07262361-7e9c-418c-be2d-c0cb3550664f/54279f4e-7b1a-41e2-910f-d3c3fae0947b"
+      ],
+      "category": "proyecto",
+      "project_id": "07262361-7e9c-418c-be2d-c0cb3550664f"
+    },
+    {
+      "file": "proyectos/05_lino-condominio-exclusivo.pdf",
+      "title": "Lino Condominio Exclusivo",
+      "subtitle": "Ficha de proyecto inmobiliario",
+      "sources": [
+        "https://www.inverclick.com/projects/17143600-87ab-4f4e-a6a9-a63d2ba7403d/f036a410-6ce4-4a6b-a433-eea754bb59d1"
+      ],
+      "category": "proyecto",
+      "project_id": "17143600-87ab-4f4e-a6a9-a63d2ba7403d"
+    },
+    {
+      "file": "proyectos/06_arvore-malabar.pdf",
+      "title": "Arvore Malabar",
+      "subtitle": "Ficha de proyecto inmobiliario",
+      "sources": [
+        "https://www.inverclick.com/projects/2da4ed99-9f65-4b73-803d-ea3bd943e327/478a9164-ea10-4615-9e86-9121eddf69ed"
+      ],
+      "category": "proyecto",
+      "project_id": "2da4ed99-9f65-4b73-803d-ea3bd943e327"
+    },
+    {
+      "file": "proyectos/07_riviera-verde-etapa-1.pdf",
+      "title": "Riviera Verde - Etapa 1",
+      "subtitle": "Ficha de proyecto inmobiliario",
+      "sources": [
+        "https://www.inverclick.com/projects/328007e6-76d4-485f-b6d1-d255c7c8874b/e00276ff-a915-433e-8228-360db19a888c"
+      ],
+      "category": "proyecto",
+      "project_id": "328007e6-76d4-485f-b6d1-d255c7c8874b"
+    },
+    {
+      "file": "proyectos/08_riviera-verde-etapa-2.pdf",
+      "title": "Riviera Verde - Etapa 2",
+      "subtitle": "Ficha de proyecto inmobiliario",
+      "sources": [
+        "https://www.inverclick.com/projects/34d43dc8-e3d6-4b44-94e8-f9929fb295b2/1f94ed18-34ab-4339-bc68-2b08b1e09183"
+      ],
+      "category": "proyecto",
+      "project_id": "34d43dc8-e3d6-4b44-94e8-f9929fb295b2"
+    },
+    {
+      "file": "proyectos/09_cabal-stay.pdf",
+      "title": "Cabal Stay",
+      "subtitle": "Ficha de proyecto inmobiliario",
+      "sources": [
+        "https://www.inverclick.com/projects/71738dbe-73e5-4f47-8763-e296105560ed/178160fb-b36a-472f-99f5-b0dbd67e5714"
+      ],
+      "category": "proyecto",
+      "project_id": "71738dbe-73e5-4f47-8763-e296105560ed"
+    },
+    {
+      "file": "proyectos/10_solarum-torre-sunna.pdf",
+      "title": "Solarum Torre Sunna",
+      "subtitle": "Ficha de proyecto inmobiliario",
+      "sources": [
+        "https://www.inverclick.com/projects/76352570-e90f-4114-8b9c-8afb7ec467ba/0feac96a-bfa6-4eac-9996-5d92fb28b8c8"
+      ],
+      "category": "proyecto",
+      "project_id": "76352570-e90f-4114-8b9c-8afb7ec467ba"
+    },
+    {
+      "file": "proyectos/11_solarum-akore.pdf",
+      "title": "Solarum Akoré",
+      "subtitle": "Ficha de proyecto inmobiliario",
+      "sources": [
+        "https://www.inverclick.com/projects/79ea1cdf-bb3c-4462-8cf9-c19901917ee9/ca0b6e6d-50f7-4b6e-9657-4d5f2daf95ef"
+      ],
+      "category": "proyecto",
+      "project_id": "79ea1cdf-bb3c-4462-8cf9-c19901917ee9"
+    },
+    {
+      "file": "proyectos/12_montebonito-alto-ultima-etapa.pdf",
+      "title": "Montebonito Alto - Última etapa",
+      "subtitle": "Ficha de proyecto inmobiliario",
+      "sources": [
+        "https://www.inverclick.com/projects/7cc2318a-4a20-4f7c-8b3f-4b43d3d1e975/06339a8b-ddc7-4003-9e2f-6e7e32c6c5b5"
+      ],
+      "category": "proyecto",
+      "project_id": "7cc2318a-4a20-4f7c-8b3f-4b43d3d1e975"
+    },
+    {
+      "file": "proyectos/13_perla-nova-reservado.pdf",
+      "title": "Perla Nova Reservado",
+      "subtitle": "Ficha de proyecto inmobiliario",
+      "sources": [
+        "https://www.inverclick.com/projects/814c3ff5-d1d1-4b46-8518-fe75374ce898/5555d523-ae64-46e3-9e97-04f017b17340"
+      ],
+      "category": "proyecto",
+      "project_id": "814c3ff5-d1d1-4b46-8518-fe75374ce898"
+    },
+    {
+      "file": "proyectos/14_villa-terra.pdf",
+      "title": "Villa Terra",
+      "subtitle": "Ficha de proyecto inmobiliario",
+      "sources": [
+        "https://www.inverclick.com/projects/973bcd1f-9693-462c-ac47-32eabca87357/ee00b0f5-8c60-49a5-9117-509b993a661f"
+      ],
+      "category": "proyecto",
+      "project_id": "973bcd1f-9693-462c-ac47-32eabca87357"
+    },
+    {
+      "file": "proyectos/15_majagua-reservado-casa-5.pdf",
+      "title": "Majagua Reservado Casa 5",
+      "subtitle": "Ficha de proyecto inmobiliario",
+      "sources": [
+        "https://www.inverclick.com/projects/97d923be-d303-4d9d-8f90-04c4fadf333c/f67ccc61-1ad2-40fb-98d7-61eb827bd2f9"
+      ],
+      "category": "proyecto",
+      "project_id": "97d923be-d303-4d9d-8f90-04c4fadf333c"
+    },
+    {
+      "file": "proyectos/16_montebonito-apartamentos.pdf",
+      "title": "Montebonito Apartamentos",
+      "subtitle": "Ficha de proyecto inmobiliario",
+      "sources": [
+        "https://www.inverclick.com/projects/a66eb474-05e1-4f98-ad3c-5b38f8da4c4a/8e550ee8-8951-4742-a388-ca8427d09f19"
+      ],
+      "category": "proyecto",
+      "project_id": "a66eb474-05e1-4f98-ad3c-5b38f8da4c4a"
+    },
+    {
+      "file": "proyectos/17_mosaiko-villa-central.pdf",
+      "title": "Mosaiko Villa Central",
+      "subtitle": "Ficha de proyecto inmobiliario",
+      "sources": [
+        "https://www.inverclick.com/projects/a84815c3-4a9f-4a1f-8ccc-dbc7337ba0df/ec189ad1-cd16-4c9a-b274-5526dac9cb70"
+      ],
+      "category": "proyecto",
+      "project_id": "a84815c3-4a9f-4a1f-8ccc-dbc7337ba0df"
+    },
+    {
+      "file": "proyectos/18_villabosque-nativo.pdf",
+      "title": "VillaBosque Nativo",
+      "subtitle": "Ficha de proyecto inmobiliario",
+      "sources": [
+        "https://www.inverclick.com/projects/babf74ca-978c-4658-ad6e-986fe9717e52/2bbd55d4-c00d-4946-9fda-c1fb6b4c5b10"
+      ],
+      "category": "proyecto",
+      "project_id": "babf74ca-978c-4658-ad6e-986fe9717e52"
+    },
+    {
+      "file": "proyectos/19_nexo-14.pdf",
+      "title": "Nexo 14",
+      "subtitle": "Ficha de proyecto inmobiliario",
+      "sources": [
+        "https://www.inverclick.com/projects/bcfcf3a5-78f9-40ae-a19c-f2c3e4022939/939f0649-37f8-4002-9bc7-6a21c4c51cec"
+      ],
+      "category": "proyecto",
+      "project_id": "bcfcf3a5-78f9-40ae-a19c-f2c3e4022939"
+    },
+    {
+      "file": "proyectos/20_hacienda-canaan.pdf",
+      "title": "Hacienda Canaan",
+      "subtitle": "Ficha de proyecto inmobiliario",
+      "sources": [
+        "https://www.inverclick.com/projects/c17c6abc-84e4-4b75-965b-74e59c12fd3d/bfa15120-cb06-4146-839b-e092996b180a"
+      ],
+      "category": "proyecto",
+      "project_id": "c17c6abc-84e4-4b75-965b-74e59c12fd3d"
+    },
+    {
+      "file": "proyectos/21_brasilia.pdf",
+      "title": "Brasilia",
+      "subtitle": "Ficha de proyecto inmobiliario",
+      "sources": [
+        "https://www.inverclick.com/projects/d2005d26-73d9-4ad0-be15-a99c0a554776/c72ab2e1-42bb-4a8b-b039-f3f1c5917333"
+      ],
+      "category": "proyecto",
+      "project_id": "d2005d26-73d9-4ad0-be15-a99c0a554776"
+    },
+    {
+      "file": "proyectos/22_canaan-living.pdf",
+      "title": "Canaan Living",
+      "subtitle": "Ficha de proyecto inmobiliario",
+      "sources": [
+        "https://www.inverclick.com/projects/d999d688-46f8-4bc1-8573-5ce220bed4fa/e6fe2233-e6bc-4731-a39a-144e5ea450ae"
+      ],
+      "category": "proyecto",
+      "project_id": "d999d688-46f8-4bc1-8573-5ce220bed4fa"
+    },
+    {
+      "file": "proyectos/23_solarum-arhu.pdf",
+      "title": "Solarum Arhú",
+      "subtitle": "Ficha de proyecto inmobiliario",
+      "sources": [
+        "https://www.inverclick.com/projects/e44d1bcf-40aa-4b6d-98eb-d041d71d622f/5cf86bb1-8de4-4af3-8efa-21e3dd3e7e2a"
+      ],
+      "category": "proyecto",
+      "project_id": "e44d1bcf-40aa-4b6d-98eb-d041d71d622f"
+    }
+  ]
+}
