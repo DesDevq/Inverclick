@@ -13,6 +13,7 @@ from Controllers.ConstructoraController import router as constructora_router
 from Controllers.RealStateController import router as real_state_router
 from Controllers.AuthController import router as auth_router
 from Controllers.RagController import router as rag_router  # RAG
+from Controllers.DocumentController import router as document_router
 
 # Verificar la conexión y estructura de la base de datos al arrancar
 verify_db_connection_and_schema()
@@ -47,3 +48,4 @@ app.include_router(constructora_router)
 app.include_router(real_state_router)
 app.include_router(auth_router)
 app.include_router(rag_router)  # RAG
+app.include_router(document_router)

@@ -1,7 +1,7 @@
 # models.py
 from datetime import datetime, date
 from typing import Optional, Union
-from sqlalchemy import String, Integer, DateTime, Date, ForeignKey, Identity, Enum as SQLEnum
+from sqlalchemy import String, Integer, BigInteger, DateTime, Date, ForeignKey, Identity, Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column
 from pydantic import BaseModel, ConfigDict
 from Repositories.database import Base
@@ -27,6 +27,8 @@ class UserDTO(Base):
         Integer, ForeignKey("users_role.id"), nullable=True)
     constructora_id: Mapped[Optional[int]] = mapped_column(
         Integer, ForeignKey("constructora.id"), nullable=True)
+    document_id: Mapped[Optional[int]] = mapped_column(
+        BigInteger, ForeignKey("documents.id", ondelete="SET NULL"), nullable=True)
     residence_city: Mapped[Optional[str]] = mapped_column(
         String(20), nullable=True)
     street_address: Mapped[Optional[str]] = mapped_column(
@@ -83,6 +85,7 @@ class UserUpdateSchema(BaseModel):
     country_id: Optional[int] = None
     user_id_role: Optional[int] = None
     constructora_id: Optional[int] = None
+    document_id: Optional[int] = None
     residence_city: Optional[str] = None
     street_address: Optional[str] = None
     zip_code: Optional[str] = None
@@ -106,6 +109,7 @@ class UserResponseSchema(BaseModel):
     country_id: Optional[int] = None
     user_id_role: Optional[int] = None
     constructora_id: Optional[int] = None
+    document_id: Optional[int] = None
     residence_city: Optional[str] = None
     street_address: Optional[str] = None
     zip_code: Optional[str] = None
