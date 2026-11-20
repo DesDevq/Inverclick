@@ -1,38 +1,39 @@
-# Inverclick API
+Backend
 
-## 1. Configuración Inicial
-
-```bash
 # Crear entorno virtual
-python -m venv .venv
+python -m venv venv
 
-# Activar entorno virtual en Windows PowerShell
-.\.venv\Scripts\Activate.ps1
+# Activar entorno virtual
+venv\Scripts\Activate.ps1
 
 # Instalar dependencias
-pip install fastapi "uvicorn[standard]" pydantic supabase sqlalchemy psycopg2-binary python-dotenv
-```
+pip install fastapi uvicorn pydantic python-dotenv
+pip install "sqlalchemy<2.1" psycopg2-binary
+pip install pgvector openai pypdf
 
----
 
-## 2. Ejecución del Proyecto
+Base de datos local
 
-### Opción A: Directamente con Python (`main.py`)
-```bash
-# Ejecución básica (puerto 8000, 127.0.0.1, recarga activa)
-python main.py
+Abrir Docker Desktop y luego:
 
-# Parámetros personalizados
-python main.py --host 0.0.0.0 --port 8080 --reload --log-level debug
+# Levantar Supabase en local
+npx supabase start
 
-# Producción con múltiples workers (deshabilita reload automáticamente)
-python main.py --host 0.0.0.0 --port 8000 --workers 4 --no-reload
+Studio: http://127.0.0.1:54323
 
-# Ver ayuda de parámetros
-python main.py --help
-```
+RAG
+powershell
+# 1. Instalar Ollama desde https://ollama.com/download y descargar el modelo de embeddings
+ollama pull qwen3-embedding:0.6b
 
-### Opción B: Mediante Uvicorn CLI
-```bash
-uvicorn main:app --reload --host 127.0.0.1 --port 8000
-```
+# 2. Crear la tabla rag_chunks (ejecutar el SQL en Studio > SQL Editor)
+rag.sql
+
+# 3. Convertir a chunks los PDFs e insertarlos en la tabla (Ollama debe estar abierto)
+En la terminal:
+python scripts\rag_ingest.py --reset 
+
+Levantar la API
+python -m uvicorn main:app --reload
+Documentación: http://127.0.0.1:8000/docs
+Estado del RAG: http://127.0.0.1:8000/rag/health
